@@ -1,0 +1,23 @@
+[package]
+name = "data-pager"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+documentation = "https://docs.rs/data-pager"
+repository = "https://github.com/tyrchen/data-pager"
+homepage = "https://github.com/tyrchen/data-pager"
+description = """
+A simple pager tool
+"""
+readme = "README.md"
+keywords = ["database", "pagination"]
+
+[dependencies]
+base64 = "0.21.0"
+derive_builder = "0.12.0"
+itertools = "0.10.5"
+serde = { version = "1.0.152", features = ["derive"] }
+snafu = { version = "0.7.4", features = ["rust_1_61"] }
+
+[dev-dependencies]
+anyhow = "1.0.69"
