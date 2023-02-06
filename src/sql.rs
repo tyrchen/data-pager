@@ -1,13 +1,13 @@
 use crate::{
     error::*,
     utils::{decode_u64, encode_u64},
-    Id, PageInfo, Pager, Paginator,
+    Container, PageInfo, Pager, Paginator,
 };
 use derive_builder::Builder;
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use snafu::ensure;
-use std::{borrow::Cow, collections::VecDeque};
+use std::borrow::Cow;
 
 const MAX_PAGE_SIZE: u64 = 100;
 
@@ -75,7 +75,7 @@ impl<'a> SqlQuery<'a> {
         .join(" ")
     }
 
-    pub fn get_pager<T: Id>(&self, data: &mut VecDeque<T>) -> Pager {
+    pub fn get_pager<T: Container>(&self, data: &mut T) -> Pager {
         let page_info = self.page_info();
         page_info.get_pager(data)
     }
