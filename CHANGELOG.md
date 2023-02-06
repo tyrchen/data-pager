@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Fix sql generation - we just need to get one more item ([604d4ba](604d4ba777521e84fada222443ac5ff036123147) - 2023-02-06 by Tyr Chen)
+
 ### Features
 
 - Initial support for pager ([aafe0a1](aafe0a129eea30185cad4e00d3ccebc269b83ee3) - 2023-02-05 by Tyr Chen)
