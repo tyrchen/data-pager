@@ -97,6 +97,26 @@ impl<'a> SqlQuery<'a> {
         })
     }
 
+    pub fn validate(&self) -> Result<(), Error> {
+        ensure!(
+            self.page_size > 0 && self.page_size < MAX_PAGE_SIZE,
+            InvalidPageSizeSnafu {
+                size: self.page_size
+            }
+        );
+        ensure!(!self.source.is_empty(), InvalidSourceSnafu);
+
+        Ok(())
+    }
+
+    pub fn normalize(&mut self) {
+        if self.page_size == 0 {
+            self.page_size = 10;
+        } else if self.page_size > MAX_PAGE_SIZE {
+            self.page_size = MAX_PAGE_SIZE;
+        }
+    }
+
     fn page_info(&self) -> PageInfo {
         PageInfo {
             cursor: self.get_cursor(),
@@ -110,26 +130,6 @@ impl<'a> SqlQuery<'a> {
         }
 
         self.projection.iter().join(", ").into()
-    }
-
-    fn validate(&self) -> Result<(), Error> {
-        ensure!(
-            self.page_size > 0 && self.page_size < MAX_PAGE_SIZE,
-            InvalidPageSizeSnafu {
-                size: self.page_size
-            }
-        );
-        ensure!(!self.source.is_empty(), InvalidSourceSnafu);
-
-        Ok(())
-    }
-
-    fn normalize(&mut self) {
-        if self.page_size == 0 {
-            self.page_size = 10;
-        } else if self.page_size > MAX_PAGE_SIZE {
-            self.page_size = MAX_PAGE_SIZE;
-        }
     }
 }
 
