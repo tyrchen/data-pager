@@ -42,8 +42,7 @@ impl<'a> SqlQueryBuilder<'a> {
 
 impl<'a> SqlQuery<'a> {
     pub fn to_sql(&self) -> String {
-        let middle_plus = if self.cursor.is_none() { 0 } else { 1 };
-        let limit = self.page_size + 1 + middle_plus;
+        let limit = self.page_size + 1;
         let offset = self.get_cursor().unwrap_or_default();
 
         let where_clause = if let Some(filter) = &self.filter {
@@ -153,7 +152,7 @@ mod tests {
         let sql = query.to_sql();
         assert_eq!(
             sql,
-            "SELECT id, name FROM users WHERE id > 10 ORDER BY id DESC LIMIT 12 OFFSET 10"
+            "SELECT id, name FROM users WHERE id > 10 ORDER BY id DESC LIMIT 11 OFFSET 10"
         );
 
         Ok(())
@@ -170,7 +169,16 @@ mod tests {
 
         let query = query.next_page(&pager).context("no next page")?;
         let sql = query.to_sql();
-        assert_eq!(sql, "SELECT * FROM users LIMIT 12 OFFSET 10");
+        assert_eq!(sql, "SELECT * FROM users LIMIT 11 OFFSET 10");
+
+        // second page
+        let mut data = generate_test_ids(11, 21);
+        let pager = query.get_pager(&mut data);
+        assert_eq!(pager.prev, Some(0));
+        assert_eq!(pager.next, Some(20));
+        let query = query.next_page(&pager).context("no next page")?;
+        let sql = query.to_sql();
+        assert_eq!(sql, "SELECT * FROM users LIMIT 11 OFFSET 20");
         Ok(())
     }
 }
